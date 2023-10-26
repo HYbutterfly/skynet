@@ -1,22 +1,18 @@
 local skynet = require "skynet"
-local sprotoloader = require "sprotoloader"
 
-local max_client = 64
+local function dump(t, prefix)
+	for k,v in pairs(t) do
+		skynet.error(prefix.."."..k.." = "..tostring(v))
+	end
+end
 
 skynet.start(function()
-	skynet.error("Server start")
-	skynet.uniqueservice("protoloader")
+	skynet.error("Server[Calculator] start")
 	if not skynet.getenv "daemon" then
 		local console = skynet.newservice("console")
 	end
-	skynet.newservice("debug_console",8000)
-	skynet.newservice("simpledb")
-	local watchdog = skynet.newservice("watchdog")
-	local addr,port = skynet.call(watchdog, "lua", "start", {
-		port = 8888,
-		maxclient = max_client,
-		nodelay = true,
-	})
-	skynet.error("Watchdog listen on " .. addr .. ":" .. port)
-	skynet.exit()
+
+	local calc = skynet.newservice("calculator", 4)
+	local p = skynet.call(calc, "lua", "login", "PID_123", "127.0.0.1")
+	dump(p, "player")
 end)

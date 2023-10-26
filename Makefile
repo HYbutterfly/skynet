@@ -50,7 +50,7 @@ update3rd :
 
 # skynet
 
-CSERVICE = snlua logger gate harbor
+CSERVICE = snlua logger gate harbor calcworker
 LUA_CLIB = skynet \
   client \
   bson md5 sproto lpeg $(TLS_MODULE)
@@ -69,6 +69,7 @@ LUA_CLIB_SKYNET = \
   lua-debugchannel.c \
   lua-datasheet.c \
   lua-sharetable.c \
+  lua-calc.c \
   \
 
 SKYNET_SRC = skynet_main.c skynet_handle.c skynet_module.c skynet_mq.c \
