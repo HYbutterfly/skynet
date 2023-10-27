@@ -259,7 +259,7 @@ local workermain = [[
 
 skynet.init(function ()
 	preload_game_static_rwlock()
-	manager:init(workermain, NWORKER > 0 and NWORKER or 6)
+	manager:init(workermain, NWORKER >= 2 and NWORKER or 8)
 end)
 
 local function proxy(...) return ... end

@@ -31,8 +31,6 @@ calcworker_cb(struct skynet_context * context, void *ud, int type, int session, 
 	struct calcworker * inst = ud;
 
 	switch (type) {
-	case PTYPE_SYSTEM:
-		break;
 	case PTYPE_TEXT:
 		lua_getglobal(inst->L, "handle");
 		lua_pushlightuserdata(inst->L, (void*)msg);
@@ -48,7 +46,6 @@ calcworker_cb(struct skynet_context * context, void *ud, int type, int session, 
 		smsg.data = data;
 		smsg.sz = size | ((size_t)PTYPE_TEXT << MESSAGE_TYPE_SHIFT);
 		skynet_context_push(source, &smsg);
-
 		break;
 	}
 	return 0;

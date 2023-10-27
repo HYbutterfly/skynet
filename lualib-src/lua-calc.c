@@ -75,7 +75,7 @@ query_context(lua_State *L) {
 	return ctx;
 }
 
-// for calc
+
 static int
 lerror(lua_State *L) {
 	struct skynet_context * ctx = query_context(L);
@@ -105,8 +105,11 @@ lerror(lua_State *L) {
 LUAMOD_API int
 luaopen_skynet_calc(lua_State *L) {
 	luaL_Reg l[] = {
+		// for calculator
 		{ "start", lstart },
 		{ "send", lsend },
+
+		// for calcworker
 		{ "pack", luaseri_pack },
 		{ "unpack", luaseri_unpack },
 		{ "error", lerror },
