@@ -4,7 +4,8 @@ local calc = require "skynet.calc"
 local core = require "skynet.core"
 local game_rwlock = require "game".rwlock
 
-local NWORKER = math.tointeger(...)
+local workerfile,  NWORKER = ...
+NWORKER = NWORKER and math.tointeger(NWORKER) or 8
 
 
 local LOCK_NOTHING = 0
@@ -239,27 +240,9 @@ end
 ---------------------------------------------------------------------
 -- service 
 
-local workermain = [[
-	package.cpath = "luaclib/?.so;"..package.cpath
-	local calc = require "skynet.calc"
-
-	local game = require "game".game
-
-	local function exec(cmd, ...)
-	    local f = game[cmd]
-	    return calc.pack(f(game, ...))
-	end
-
-	function handle(data, sz)
-	    return exec(calc.unpack(data, sz))
-	end
-
-	collectgarbage("stop")
-]]
-
 skynet.init(function ()
 	preload_game_static_rwlock()
-	manager:init(workermain, NWORKER >= 2 and NWORKER or 8)
+	manager:init(workerfile, NWORKER)
 end)
 
 local function proxy(...) return ... end

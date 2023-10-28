@@ -20,7 +20,7 @@ lstart(lua_State *L) {
 	lua_State *W = luaL_newstate();
 
 	luaL_openlibs(W);
-	if (luaL_dostring(W, luamain)) {
+	if (luaL_dofile(W, luamain)) {
 		return luaL_error(L, "%s", lua_tostring(W, -1));
 	}
 
