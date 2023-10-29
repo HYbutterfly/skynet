@@ -1,11 +1,14 @@
 local skynet = require "skynet"
 require "skynet.manager" 
 local calc = require "skynet.calc"
-local core = require "skynet.core"
 local game_rwlock = require "game".rwlock
 
 local workerfile,  NWORKER = ...
 NWORKER = NWORKER and math.tointeger(NWORKER) or 8
+
+
+local CALC_SEND_SESSION = 0
+local CALC_CALL_SESSION = 1
 
 
 local LOCK_NOTHING = 0
@@ -208,7 +211,7 @@ function manager:insert2solt(idx, action, response, rwlock)
 	s.working = true
 	s.response = response
 	s.lock = rwlock
-	calc.send(self.myaddr, self.workers[idx], action.msg, action.sz)
+	calc.send(self.myaddr, self.workers[idx], response and CALC_CALL_SESSION or CALC_SEND_SESSION, action.msg, action.sz)
 end
 
 function manager:on_worker_done(worker, msg, sz)

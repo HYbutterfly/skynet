@@ -47,12 +47,13 @@ static int
 lsend(lua_State *L) {
 	uint32_t source = luaL_checkinteger(L, 1);
 	uint32_t handle = luaL_checkinteger(L, 2);
-	void *data = lua_touserdata(L, 3);
-	uint32_t sz = luaL_checkinteger(L, 4);
+	uint32_t session = luaL_checkinteger(L, 3); 		// 0 : send, 1 : call
+	void *data = lua_touserdata(L, 4);
+	uint32_t sz = luaL_checkinteger(L, 5);
 
 	static struct skynet_message smsg;
 	smsg.source = source;
-	smsg.session = 0;
+	smsg.session = session;
 	smsg.data = data;
 	smsg.sz = sz | ((size_t)PTYPE_TEXT << MESSAGE_TYPE_SHIFT);
 	skynet_context_push(handle, &smsg);

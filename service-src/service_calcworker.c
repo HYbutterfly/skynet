@@ -33,18 +33,29 @@ calcworker_cb(struct skynet_context * context, void *ud, int type, int session, 
 	switch (type) {
 	case PTYPE_TEXT:
 		lua_getglobal(inst->L, "handle");
+		lua_pushinteger(inst->L, session);
 		lua_pushlightuserdata(inst->L, (void*)msg);
 		lua_pushinteger(inst->L, sz);
-		lua_call(inst->L, 2, 2);
 
-	    void *data = lua_touserdata(inst->L, -2); 
-	    size_t size = lua_tointeger(inst->L, -1);
-	    lua_pop(inst->L, 2);
-	    
-		smsg.source = skynet_context_handle(context);
-		smsg.session = 0;
-		smsg.data = data;
-		smsg.sz = size | ((size_t)PTYPE_TEXT << MESSAGE_TYPE_SHIFT);
+		if (session == 0) {
+			lua_call(inst->L, 3, 0);
+
+			smsg.source = skynet_context_handle(context);
+			smsg.session = 0;
+			smsg.data = NULL;
+			smsg.sz = 0 | ((size_t)PTYPE_TEXT << MESSAGE_TYPE_SHIFT);
+		} else {
+			lua_call(inst->L, 3, 2);
+
+		    void *data = lua_touserdata(inst->L, -2); 
+		    size_t size = lua_tointeger(inst->L, -1);
+		    lua_pop(inst->L, 2);
+		    
+			smsg.source = skynet_context_handle(context);
+			smsg.session = 0;
+			smsg.data = data;
+			smsg.sz = size | ((size_t)PTYPE_TEXT << MESSAGE_TYPE_SHIFT);
+		}
 		skynet_context_push(source, &smsg);
 		break;
 	}
