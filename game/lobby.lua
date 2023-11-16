@@ -1,10 +1,13 @@
 local calc = require "skynet.calc"
 
 
-return function(game, LOCK)
+return function(game, lock)
 
-    LOCK("lobby")(function ()
-        function game:login(pid, ip)
+    lock("lobby.players.#pid")(function ()
+        function game:login(params)
+            local pid = assert(params.pid)
+            local ip = assert(params.ip)
+
             calc.error(string.format("player %s login from: %s", pid, ip))
             self.lobby.players[pid] = {
                 id = pid,
@@ -14,7 +17,8 @@ return function(game, LOCK)
             return self.lobby.players[pid]
         end
 
-        function game:logout(pid)
+        function game:logout(params)
+            local pid = assert(params.pid)
             self.lobby.players[pid] = nil
             self.lobby.online = self.lobby.online - 1
         end

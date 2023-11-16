@@ -12,12 +12,12 @@ local game = {
 local rwlock = {}
 
     
-local function LOCK(lock)
+local function lock(str)
     return function (f)
         f()
         for k,v in pairs(game) do
             if type(v) == "function" and not rwlock[k] then
-                rwlock[k] = lock
+                rwlock[k] = str
             end
         end
     end
@@ -26,7 +26,7 @@ end
 
 for _, m in ipairs(moudle) do
     local f = require(string.format("game.%s", m))
-    f(game, LOCK)
+    f(game, lock)
 end
 
 

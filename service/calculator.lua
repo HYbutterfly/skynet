@@ -72,11 +72,11 @@ local function preload_game_static_rwlock()
 end
 
 local function gen_dynamic_rwlock(lock_str, params)
-	for index, value in ipairs(params) do
-		if value ~= nil then
-	    	lock_str = string.gsub(lock_str, "#" .. index, tostring(value))
-	    end
-	end
+	lock_str = lock_str:gsub("#(%w+)", function (key)
+		if params and params[key] then
+			return tostring(params[key])
+		end
+	end)
     local lock = lock_str:split(",")
     for i, l in ipairs(lock) do
         lock[i] = l:trim()
@@ -271,8 +271,8 @@ local forward_map = {
 	[skynet.PTYPE_TEXT] = skynet.PTYPE_TEXT
 }
 
-local function newaction(msg, sz, name, ...)
-	return { msg = msg, sz = sz, name = name, params = {...} }
+local function newaction(msg, sz, name, params)
+	return { msg = msg, sz = sz, name = name, params = params }
 end
 
 skynet.forward_type(forward_map ,function()

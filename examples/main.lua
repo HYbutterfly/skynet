@@ -13,6 +13,6 @@ skynet.start(function()
 	end
 
 	local calc = skynet.newservice("calculator", "worker.lua", 4)
-	local p = skynet.call(calc, "lua", "login", "PID_123", "127.0.0.1")
+	local p = skynet.call(calc, "lua", "login", {pid = "PID_123", ip = "127.0.0.1"})
 	dump(p, "player")
 end)
