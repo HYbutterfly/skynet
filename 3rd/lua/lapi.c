@@ -1153,6 +1153,15 @@ LUA_API void lua_clonetable(lua_State *L, const void * tp) {
   lua_unlock(L);
 }
 
+LUA_API void lua_clonetable2(lua_State *L, const void * tp) {
+  Table *t = cast(Table *, tp);
+
+  lua_lock(L);
+  sethvalue2s(L, L->top.p, t);
+  api_incr_top(L);
+  lua_unlock(L);
+}
+
 LUA_API int lua_dump (lua_State *L, lua_Writer writer, void *data, int strip) {
   int status;
   TValue *o;
